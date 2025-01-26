@@ -1,34 +1,74 @@
 "use client";
 
-import React, { useState } from "react";
-import StepOne from "./StepOne";
-import StepTwo from "./StepTwo";
-import StepThree from "./StepThree";
-import FormFinished from "./FormFinished";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Step1 from "./StepOne";
+import Step2 from "./StepTwo";
+import Step3 from "./StepThree";
+import Step4 from "./StepFour";
+
 const MultiStepForm = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formValue, setFormValue] = useState({
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    userName: "",
-    phoneNumber: "",
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    dateOfBirth: "",
+    profileImage: null,
   });
-  const Step = [StepOne, StepTwo, StepThree, FormFinished][currentStep];
 
-  const handleNextStep = () => {
-    if (currentStep !== 3) {
-      setCurrentStep((prevStep) => prevStep + 1);
-    }
+  const router = useRouter();
+
+  const handleNext = () => setStep((prev) => prev + 1);
+  const handleBack = () => setStep((prev) => prev - 1);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
-  const handleBackStep = () => {
-    if (currentStep !== 0) {
-      setCurrentStep((prevStep) => prevStep - 1);
-    }
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, profileImage: file });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+    router.push("/success");
   };
 
   return (
-    <div>
-      <Step handleNextStep={handleNextStep} handleBackStep={handleBackStep} />
+    <div className="flex flex-col w-[480px] min-h-[655px] p-8 bg-white rounded-lg ">
+      {step === 1 && (
+        <Step1
+          formData={formData}
+          handleChange={handleChange}
+          handleNext={handleNext}
+        />
+      )}
+      {step === 2 && (
+        <Step2
+          formData={formData}
+          handleChange={handleChange}
+          handleNext={handleNext}
+          handleBack={handleBack}
+        />
+      )}
+      {step === 3 && (
+        <Step3
+          formData={formData}
+          handleChange={handleChange}
+          handleImageUpload={handleImageUpload}
+          handleNext={handleNext}
+          handleBack={handleBack}
+        />
+      )}
+      {step === 4 && <Step4 handleSubmit={handleSubmit} />}
     </div>
   );
 };

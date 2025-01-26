@@ -1,59 +1,67 @@
-import React from "react";
-import PineconeIcon from "@/icons/pineconeIcon";
-import Form from "../components/Form";
+import { useState } from "react";
+import Input from "./Input";
+import PineconeIcon from "@/icons/PineconeIcon";
 
-const StepOne = (props) => {
-  const { handleNextStep, handleBackStep } = props;
+const Step1 = ({ formData, handleChange, handleNext }) => {
+  const [errors, setErrors] = useState({});
 
-  const fields = [
-    {
-      name: "fName",
-      label: "First Name *",
-      placeholder: "Enter your first name",
-      required: true,
-    },
-    {
-      name: "lName",
-      label: "Last Name *",
-      placeholder: "Enter your last name",
-      required: true,
-    },
-    {
-      name: "uName",
-      label: "Username *",
-      placeholder: "Enter your username",
-      required: true,
-    },
-  ];
+  const validateAndProceed = () => {
+    const newErrors = {};
+    if (!formData.firstName) newErrors.firstName = "Нэрээ оруулна уу.";
+    if (!formData.lastName) newErrors.lastName = "Овгоо оруулна уу.";
+    if (!formData.username)
+      newErrors.username = "Хэрэглэгчийн нэрээ оруулна уу.";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      handleNext();
+    }
+  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="opacity-100 transform-none">
-        <div className="flex flex-col w-[480px] min-h-[655px] p-8 bg-white rounded-lg">
-          <div className="space-y-2 mb-7">
-            <div className="flex">
-              <PineconeIcon />
-            </div>
-            <h2 className="text-[26px] text-foreground font-semibold">
-              Join Us! 😎
-            </h2>
-            <p className="text-[18px] whitespace-nowrap text-[#8E8E8E]">
-              Please provide all current information accurately.
-            </p>
-          </div>
-
-          <div className="flex flex-col flex-grow gap-y-3">
-            <Form fields={fields} />
-            <div className="flex justify-between mt-4">
-              <button onClick={handleNextStep} className="btn-primary">
-                Continue
-              </button>
-            </div>
-          </div>
-        </div>
+    <div>
+      <div className="space-y-2 mb-7">
+        <PineconeIcon />
+        <h2 className="text-[26px] text-foreground font-semibold">
+          Join Us! 😎
+        </h2>
+        <p className="text-[18px] whitespace-nowrap text-[#8E8E8E]">
+          Please provide all current information accurately.
+        </p>
       </div>
+      <Input
+        label="First name"
+        name="firstName"
+        value={formData.firstName}
+        onChange={handleChange}
+        placeholder="Your first name"
+        error={errors.firstName}
+      />
+      <Input
+        label="Last name"
+        name="lastName"
+        value={formData.lastName}
+        onChange={handleChange}
+        placeholder="Your last name"
+        error={errors.lastName}
+      />
+      <Input
+        label="Username"
+        name="username"
+        value={formData.username}
+        onChange={handleChange}
+        placeholder="Your username"
+        error={errors.username}
+      />
+      <button
+        onClick={validateAndProceed}
+        className="p-2 bg-blue-500 text-white rounded"
+      >
+        Next
+      </button>
     </div>
   );
 };
 
-export default StepOne;
+export default Step1;

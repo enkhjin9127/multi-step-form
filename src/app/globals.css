@@ -4,3 +4,6 @@
 
 @media (prefers-color-scheme: dark) {
 }
+body {
+  @apply flex min-h-screen items-center justify-center bg-gray-100;
+}
